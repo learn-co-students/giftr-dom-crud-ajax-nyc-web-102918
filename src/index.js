@@ -50,16 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(giftNameInput);
     console.log(giftImageInput);
 
-    giftsLength++
-
 
     const newGift = document.createElement("li")
 
     const giftName = document.createElement("p")
-    newName.textContent = giftNameInput.value
+    giftName.textContent = giftNameInput.value
     newGift.appendChild(giftName)
-
-    newGift.setAttribute("data-id", giftsLength)
 
     const giftImg = document.createElement("img")
     giftImg.src = giftImageInput.value
@@ -138,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const search = document.querySelector("#filter-input")
 
   search.addEventListener("keydown", function searchClickHandler(event) {
+
     if (event.which === 13) {
       const query = search.value
       const gifts = giftList.querySelectorAll("li")
