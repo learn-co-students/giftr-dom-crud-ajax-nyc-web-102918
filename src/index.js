@@ -33,6 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
+  // other way for forEach or adding to the DOM in general
+  // can interpolate string to write html in string format
+  // giftList.innerHTML += `<li>
+  //                          ${gift.name}
+  //                          <img src='${gift.image}'>
+  //                        </li>`
+
   const giftForm = document.querySelector("#new-gift-form")
   console.log(giftForm);
 
@@ -76,6 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event.target.className === "delete"){
       event.target.parentNode.remove()
     } else if (event.target.className === "edit") {
+      event.target.setAttribute("disabled", true)
+      event.stopPropagation()
       console.log(event.target);
       const editForm = document.createElement("div")
 
@@ -108,10 +117,23 @@ document.addEventListener('DOMContentLoaded', () => {
       editForm.remove()
       console.log(targetItem.textContent);
 
+      const edit = targetItem.document.querySelector("button.edit")
+      edit.setAttribute("disabled", false)
 
       // const updateNameInput = document.querySelector()
     }
   })
+
+  // const search = document.querySelector("#filter-input")
+  // const searchIcon = document.querySelector(".search.icon")
+  //
+  // searchIcon.addEventListener("click", function searchClickHandler(event) {
+  //   const query = search.value
+  //   console.log(query);
+  //
+  //   const gifts = giftList.querySelectorAll("li")
+  //   const searchedGifts = gifts.filter
+  // })
 
 
 })
