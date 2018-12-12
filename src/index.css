@@ -7,8 +7,8 @@
 }
 
 #gift-icon:hover {
-    animation: shake 0.7s; 
-    animation-iteration-count: infinite; 
+    animation: shake 0.7s;
+    animation-iteration-count: infinite;
 }
 
 @keyframes shake {
@@ -24,3 +24,14 @@
     90% { transform: translate(1px, 2px) rotate(0deg); }
     100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
+.gift-icon:hover {
+    animation: shake 0.7s;
+    animation-iteration-count: infinite;
+}
+.gift-icon{height:100px;float:right;
+}
+form {display:inline-block;}
+ul div {height:100px;}
+li {display:inline-block;}
+ .hide{display:none;}
+ .show{display:inline-block; transition: 1s}
