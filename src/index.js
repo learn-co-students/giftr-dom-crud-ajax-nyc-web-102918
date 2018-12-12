@@ -61,6 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
     giftImg.src = giftImageInput.value
     newGift.appendChild(giftImg)
 
+    const editBtn = document.createElement("button")
+    editBtn.textContent = "Edit"
+    editBtn.classList.add("edit");
+    newGift.appendChild(editBtn)
+
     const deleteBtn = document.createElement("button")
     deleteBtn.textContent = "Delete"
     deleteBtn.classList.add("delete")
