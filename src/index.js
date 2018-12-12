@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
       event.target.parentNode.remove()
     } else if (event.target.className === "edit") {
       event.target.setAttribute("disabled", true)
-      event.stopPropagation()
       console.log(event.target);
       const editForm = document.createElement("div")
 
@@ -134,6 +133,29 @@ document.addEventListener('DOMContentLoaded', () => {
   //   const gifts = giftList.querySelectorAll("li")
   //   const searchedGifts = gifts.filter
   // })
+
+
+  const search = document.querySelector("#filter-input")
+
+  search.addEventListener("keydown", function searchClickHandler(event) {
+    if (event.which === 13) {
+      const query = search.value
+      const gifts = giftList.querySelectorAll("li")
+      const giftArray = Array.from(gifts)
+      const filteredGifts = giftArray.filter(function(gift) {
+
+      const name = gift.querySelector("p").textContent
+        return name.includes(query)
+      })
+
+      filteredGifts.forEach(function (gift) {
+        giftList.innerHTML = ""
+        giftList.appendChild(gift)
+      })
+    }
+
+
+  })
 
 
 })
