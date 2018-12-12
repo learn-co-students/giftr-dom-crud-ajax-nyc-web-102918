@@ -2,9 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM has been fully loaded')
   console.table(gifts)
 
-  let giftsLength = gifts.length
-  console.log("gifts:", giftsLength);
-
   const giftList = document.querySelector(".gift-list")
   console.log(giftList)
 
@@ -13,8 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     gifts.forEach(function (gift) {
       const newGift = document.createElement("li")
-      newGift.textContent = gift.name
-      newGift.setAttribute("data-id", gift.id)
+
+      const giftName = document.createElement("p")
+      giftName.textContent = gift.name
+      newGift.appendChild(giftName)
 
       const giftImg = document.createElement("img")
       giftImg.src = gift.image
@@ -48,7 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     const newGift = document.createElement("li")
-    newGift.textContent = giftNameInput.value
+
+    const giftName = document.createElement("p")
+    newName.textContent = giftNameInput.value
+    newGift.appendChild(giftName)
+
     newGift.setAttribute("data-id", giftsLength)
 
     const giftImg = document.createElement("img")
@@ -77,12 +80,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const editForm = document.createElement("div")
 
       const editFormNameInput = document.createElement("input")
-      editFormNameInput.setAttribute("name", `gift-${event.target.parentNode.dataset.id}-name`)
+      editFormNameInput.setAttribute("name", "gift-name")
       editFormNameInput.setAttribute("placeholder", "Enter name")
       editForm.appendChild(editFormNameInput)
 
       const editFormImageInput = document.createElement("input")
-      editFormImageInput.setAttribute("name", `gift-${event.target.parentNode.dataset.id}-image`)
+      editFormImageInput.setAttribute("name", "gift-image")
       editFormImageInput.setAttribute("placeholder", "Enter image url")
       editForm.appendChild(editFormImageInput)
 
@@ -93,7 +96,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
       event.target.parentNode.appendChild(editForm)
     } else if (event.target.className === "update") {
-      console.log(event.target.parentNode.parentNode.children[0]);
+      const editForm = event.target.parentNode
+      const targetItem = event.target.parentNode.parentNode
+      const nameInput = editForm.querySelector('input[name="gift-name"]')
+      const imageInput = editForm.querySelector('input[name="gift-image"]')
+
+      const targetItemP = targetItem.querySelector('p')
+      const targetItemImg = targetItem.querySelector('img')
+      targetItemP.textContent = nameInput.value
+      targetItemImg.src = imageInput.value
+      editForm.remove()
+      console.log(targetItem.textContent);
+
+
+      // const updateNameInput = document.querySelector()
     }
   })
 
