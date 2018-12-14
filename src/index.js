@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return response.json()
     })
     .then(data => {
+      giftForm.reset()
       allGifts.push(data)
       showGifts(allGifts)
     })
@@ -170,7 +171,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return gift.id == giftId
       })
 
-      console.log(allGifts.indexOf(selectedGift));
+      const deleteIndex = allGifts.indexOf(selectedGift)
+
+      allGifts.splice(deleteIndex, 1)
 
       event.target.parentNode.remove()
     }
