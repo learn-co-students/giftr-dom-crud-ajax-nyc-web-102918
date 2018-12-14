@@ -1,88 +1,120 @@
 document.addEventListener('DOMContentLoaded', () => {
+  
+  const ul = document.querySelector("#gift-list")
+  const newGift = document.getElementById("new-gift-form")
+  const filterInput = document.querySelector('#filter-input')
+
+
+  giftInitializer()
+
+  ul.addEventListener('click', (event) => { 
+
+    if(event.target.dataset.action == "delete"){
+      event.target.parentNode.remove() 
+    }
+    else if (event.target.dataset.action == "edit"){
+      addEditForm()
+    }
+  }) 
+
+  document.addEventListener('submit', (event) =>{
+    event.preventDefault()
+    const newGiftName = event.target.querySelector("#gift-name-input").value
+
+    const newGiftImage = event.target.querySelector("#gift-image-input").value
+
+    addNewGift(newGiftName, newGiftImage)
+  })
+
+  filterInput.addEventListener('input', (event) => {
+    if (event.target.value === ''){ 
+      giftInitializer()
+    }
+    filteredGifts(ul)
+  })
+})
+
+
+
 
   // selected the ul node
-  const ul = document.querySelector(".gift-list")
+  
   // another way document.getElementById('gift-list')
 
   // iterate through the gifts array  and assigned it to a list item and appended it to the ul node. 
-  giftInitializer(gifts) 
+
 
     // iterate through ul's list items 
-    for (let listItem of ul.children){
-      // created event listeners for each childnode in ul. 
-      listItem.addEventListener('click', (event) =>{
-        event.preventDefault()
+//     for (let listItem of ul.children){
+//       // created event listeners for each childnode in ul. 
+//       listItem.addEventListener('click', (event) =>{
+//         event.preventDefault()
         
-        if (event.target.value == 'Edit'){
-          event.target.parentNode.querySelector('p')
-          .contentEditable = "true";
+//         if (event.target.value == 'Edit'){
+//           event.target.parentNode.querySelector('p')
+//           .contentEditable = "true";
 
-          let list = event.target.parentNode
-          let img = event.target.parentNode.querySelector('img').src
+//           let list = event.target.parentNode
+//           let img = event.target.parentNode.querySelector('img').src
 
-          //Create the url text are for the edit form 
-          url = document.createElement('input')
-          url.type = 'url'
-          url.value = img
-          url.id = 'url'
+//           //Create the url text are for the edit form 
+//           url = document.createElement('input')
+//           url.type = 'url'
+//           url.value = img
+//           url.id = 'url'
 
-          // Create the submit button for the edit form
-          urlSubmit = document.createElement('button')
-          urlSubmit.value = "Change Image"
-          urlSubmit.name = "Change Image"
-          urlSubmit.textContent = "Change Image"
+//           // Create the submit button for the edit form
+//           urlSubmit = document.createElement('button')
+//           urlSubmit.value = "Change Image"
+//           urlSubmit.name = "Change Image"
+//           urlSubmit.textContent = "Change Image"
 
-          list.appendChild(url)
-          list.appendChild(urlSubmit)
+//           list.appendChild(url)
+//           list.appendChild(urlSubmit)
 
-          // let giftTitle = document.createElement('textarea')
-          // giftTitle.name = "Title"
+//           // let giftTitle = document.createElement('textarea')
+//           // giftTitle.name = "Title"
 
-          // event.target.parentNode.appendChild(giftTitle)
-          // let giftImage = document.createElement('textarea')
-          // giftImage.name = "Image link"
-          // event.target.parentNode.appendChild(giftImage)
+//           // event.target.parentNode.appendChild(giftTitle)
+//           // let giftImage = document.createElement('textarea')
+//           // giftImage.name = "Image link"
+//           // event.target.parentNode.appendChild(giftImage)
 
-        }else if(event.target.value == 'Delete'){
-          //deletes list item
-          event.target.parentNode.remove() 
-        }
 
-        if(event.target.value =="Change Image"){
-          // find the url node using the ID
-          let urlText = event.target.parentNode.querySelector('#url')
+//         if(event.target.value =="Change Image"){
+//           // find the url node using the ID
+//           let urlText = event.target.parentNode.querySelector('#url')
 
-          // find the image node
-          let image = event.target.parentNode.querySelector('img')
-          // replace the img src with the new value
-          image.src = urlText.value
+//           // find the image node
+//           let image = event.target.parentNode.querySelector('img')
+//           // replace the img src with the new value
+//           image.src = urlText.value
 
-          // remove the edit form
-          urlText.remove()
-          event.target.remove()
-        }
-      })
-    }
+//           // remove the edit form
+//           urlText.remove()
+//           event.target.remove()
+//         }
+//       })
+//     }
 
-    let filterInput = document.querySelector('#filter-input')
+//     let filterInput = document.querySelector('#filter-input')
 
-    filterInput.addEventListener('input', (event) => {
-      event.preventDefault()
+//     filterInput.addEventListener('input', (event) => {
+//       event.preventDefault()
       
-      const search = event.target.value
+//       const search = event.target.value
 
-      const filtered_gift = gifts.filter(gift => gift.name.includes(search))
+//       const filtered_gift = gifts.filter(gift => gift.name.includes(search))
 
-      console.log(filtered_gift)
-      ul.innerHTML = ''
+//       ul.innerHTML = ''
 
-      //in the Event Handler
-      giftInitializer(filtered_gift) 
+//       //in the Event Handler
+//       giftInitializer(filtered_gift) 
 
 
-    })
+//     })
 
-});
+// });
 
 
 // giftList.addeventListener('click', (event) => {
