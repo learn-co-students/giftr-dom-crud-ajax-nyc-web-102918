@@ -1,165 +1,215 @@
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM has been fully loaded')
-  console.table(gifts)
+  // console.log('DOM has been fully loaded')
+  // console.log(gifts)
+  // const giftList = document.querySelector('.gift-list')
+  const giftList = document.getElementById('gift-list')
+  const filterInput = document.getElementById('filter-input')
+  const giftForm = document.getElementById('new-gift-form')
 
-  const giftList = document.querySelector(".gift-list")
-  console.log(giftList)
+  // boolean to check if we clicked on the edit button:
+  let clicked = false
+  // for (let gift of gifts) {
+  //   console.log(gift)
+  // }
+  let allGifts = []
+  let editForm
 
-  if (gifts.length > 0) {
-    giftList.innerHTML = ""
-
-    gifts.forEach(function (gift) {
-      const newGift = document.createElement("li")
-
-      const giftName = document.createElement("p")
-      giftName.textContent = gift.name
-      newGift.appendChild(giftName)
-
-      const giftImg = document.createElement("img")
-      giftImg.src = gift.image
-      newGift.appendChild(giftImg)
-
-      const deleteBtn = document.createElement("button")
-      deleteBtn.textContent = "Delete"
-      deleteBtn.classList.add("delete");
-      newGift.appendChild(deleteBtn)
-
-      const editBtn = document.createElement("button")
-      editBtn.textContent = "Edit"
-      editBtn.classList.add("edit");
-      newGift.appendChild(editBtn)
-
-      giftList.appendChild(newGift)
+  function fetchGifts() {
+    fetch("http://localhost:3000/gifts")
+    .then(r => {
+      return r.json()
+    })
+    .then(data => {
+      allGifts = data
+      showGifts(data)
     })
   }
 
-  // other way for forEach or adding to the DOM in general
-  // can interpolate string to write html in string format
-  // giftList.innerHTML += `<li>
-  //                          ${gift.name}
-  //                          <img src='${gift.image}'>
-  //                        </li>`
 
-  const giftForm = document.querySelector("#new-gift-form")
-  console.log(giftForm);
 
-  giftForm.addEventListener('submit', function submitHandler(event) {
+  // ADD NEW GIFT
+  giftForm.addEventListener('submit', event => {
     event.preventDefault()
-    const giftNameInput = document.querySelector("#gift-name-input")
-    const giftImageInput = document.querySelector("#gift-image-input")
-    console.log(giftNameInput);
-    console.log(giftImageInput);
+    const giftName = event.target.querySelector('#gift-name-input').value
+    const giftImage = event.target.querySelector('#gift-image-input').value
+    //console.log(giftName, giftImage);
 
+    fetch("http://localhost:3000/gifts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+				"Accept": "application/json"
+      },
+      body: JSON.stringify({
+				name: giftName,
+				image: giftImage
+			})
 
-    const newGift = document.createElement("li")
-
-    const giftName = document.createElement("p")
-    giftName.textContent = giftNameInput.value
-    newGift.appendChild(giftName)
-
-    const giftImg = document.createElement("img")
-    giftImg.src = giftImageInput.value
-    newGift.appendChild(giftImg)
-
-    const editBtn = document.createElement("button")
-    editBtn.textContent = "Edit"
-    editBtn.classList.add("edit");
-    newGift.appendChild(editBtn)
-
-    const deleteBtn = document.createElement("button")
-    deleteBtn.textContent = "Delete"
-    deleteBtn.classList.add("delete")
-    newGift.appendChild(deleteBtn)
-
-
-    giftList.appendChild(newGift)
-
-    giftForm.reset()
+    })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      allGifts.push(data)
+      showGifts(allGifts)
+    })
 
   })
 
 
-  giftList.addEventListener('click', function buttonHandler(event) {
-    console.log(event.target);
-    if (event.target.className === "delete"){
+
+
+
+
+
+
+
+  // BUTTON CLICK HANDLERS
+  giftList.addEventListener( 'click', (event) => {
+    // EDIT BUTTON
+    if (event.target.dataset.action === "edit-gift") {
+      clicked = !clicked
+
+      if (clicked) {
+        const gift = event.target.parentNode
+        console.log(gift);
+        // const gift = event.target.dataset.id
+        // const gift = document.getElementById(`gift-${giftId}`)
+
+        gift.innerHTML += `
+          <form id="edit-gift-form" data-actionclass="ui form" action="index.html" method="POST">
+            <label for="name">Gift Name: </label>
+            <input id="edit-gift-name" type="text" name="name" value="">
+            <label for="image">Gift Image: </label>
+            <input id="edit-gift-image" type="text" name="image" value="">
+            <br>
+            <button data-action='edit-gift-details' id="edit-gift-form-button" type="submit" name="button" class="ui button">Edit Gift</button>
+          </form>`
+          const editGiftForm = document.getElementById('edit-gift-form')
+          editGift(editGiftForm, gift)
+      } else {
+        const form = document.getElementById('edit-gift-form')
+        form.remove()
+      }
+    }
+
+    // if (event.target.dataset.action === 'edit-gift-details') {
+    //   event.preventDefault()
+    //
+    //   const name = document.getElementById('edit-gift-name').value
+    //   const image = document.getElementById('edit-gift-image').value
+    //   const gift = event.target.parentNode.parentNode
+    //
+    //   gift.innerHTML = `
+    //       ${name} <br />
+    //       <img src='${image}' height=200 width=200>
+    //       <br>
+    //       <button data-action='edit-gift' class='ui button'>Edit</button>
+    //       <button data-action='delete-gift' class='ui button'>Delete</button>`
+    //
+    // }
+
+
+
+    // EDIT GIFT
+    function editGift(editForm, gift) {
+      editForm.addEventListener("submit", event => {
+        event.preventDefault()
+        giftId = gift.dataset.id
+        updatedName = event.target.querySelector("#edit-gift-name").value
+        updatedImage = event.target.querySelector("#edit-gift-image").value
+
+        fetch(`http://localhost:3000/gifts/${giftId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+    				"Accept": "application/json"
+          },
+          body: JSON.stringify({
+    				name: updatedName,
+    				image: updatedImage
+    			})
+        })
+        .then(response => {
+          return response.json()
+        })
+        .then(data => {
+          console.log(data);
+
+          const selectedGift = allGifts.find(gift => {
+            return gift.id === data.id
+          })
+
+          selectedGift.name = data.name
+          selectedGift.image = data.image
+
+          console.log(selectedGift, allGifts);
+
+          gift.innerHTML = `
+            ${data.name} <br />
+              <img src='${data.image}' height=200 width=200>
+              <br>
+              <button data-action='edit-gift' class='ui button'>Edit</button>
+              <button data-action='delete-gift' class='ui button'>Delete</button>`
+        })
+      })
+    }
+
+
+
+
+    // DELETE BUTTON
+    if (event.target.dataset.action === 'delete-gift') {
+      const giftId = event.target.parentNode.dataset.id
+
+      fetch(`http://localhost:3000/gifts/${giftId}`, {
+        method: "DELETE"
+      })
+
+      const selectedGift = allGifts.find(gift => {
+        return gift.id == giftId
+      })
+
+      console.log(allGifts.indexOf(selectedGift));
+
       event.target.parentNode.remove()
-    } else if (event.target.className === "edit") {
-      event.target.setAttribute("disabled", true)
-      console.log(event.target);
-      const editForm = document.createElement("div")
-
-      const editFormNameInput = document.createElement("input")
-      editFormNameInput.setAttribute("name", "gift-name")
-      editFormNameInput.setAttribute("placeholder", "Enter name")
-      editForm.appendChild(editFormNameInput)
-
-      const editFormImageInput = document.createElement("input")
-      editFormImageInput.setAttribute("name", "gift-image")
-      editFormImageInput.setAttribute("placeholder", "Enter image url")
-      editForm.appendChild(editFormImageInput)
-
-      const editSubmitBtn = document.createElement("button")
-      editSubmitBtn.textContent = "Update Gift"
-      editSubmitBtn.classList.add("update");
-      editForm.appendChild(editSubmitBtn)
-
-      event.target.parentNode.appendChild(editForm)
-    } else if (event.target.className === "update") {
-      const editForm = event.target.parentNode
-      const targetItem = event.target.parentNode.parentNode
-      const nameInput = editForm.querySelector('input[name="gift-name"]')
-      const imageInput = editForm.querySelector('input[name="gift-image"]')
-
-      const targetItemP = targetItem.querySelector('p')
-      const targetItemImg = targetItem.querySelector('img')
-      targetItemP.textContent = nameInput.value
-      targetItemImg.src = imageInput.value
-      editForm.remove()
-      console.log(targetItem.textContent);
-
-      const edit = targetItem.document.querySelector("button.edit")
-      edit.setAttribute("disabled", false)
-
-      // const updateNameInput = document.querySelector()
     }
   })
 
-  // const search = document.querySelector("#filter-input")
-  // const searchIcon = document.querySelector(".search.icon")
-  //
-  // searchIcon.addEventListener("click", function searchClickHandler(event) {
-  //   const query = search.value
-  //   console.log(query);
-  //
-  //   const gifts = giftList.querySelectorAll("li")
-  //   const searchedGifts = gifts.filter
-  // })
 
 
-  const search = document.querySelector("#filter-input")
-
-  search.addEventListener("keydown", function searchClickHandler(event) {
-
-    if (event.which === 13) {
-      const query = search.value
-      const gifts = giftList.querySelectorAll("li")
-      const giftArray = Array.from(gifts)
-      const filteredGifts = giftArray.filter(function(gift) {
-
-      const name = gift.querySelector("p").textContent
-        return name.includes(query)
-      })
-
-      filteredGifts.forEach(function (gift) {
-        giftList.innerHTML = ""
-        giftList.appendChild(gift)
-      })
-    }
 
 
+  // Search Filter
+  filterInput.addEventListener( 'input', (event) => {
+    const searchTerm = event.target.value
+
+    const filteredGifts = allGifts.filter(function(gift) {
+      return gift.name.includes(searchTerm)
+    })
+
+    giftList.innerHTML = ''
+
+    showGifts(filteredGifts)
   })
 
 
-})
+  function showGifts(gifts) {
+    giftList.innerHTML = ""
+    gifts.forEach(function(gift) {
+      giftList.innerHTML += `
+        <li data-id='${gift.id}'>
+          ${gift.name} <br />
+          <img src='${gift.image}' height=200 width=200>
+          <br>
+          <button data-action='edit-gift' class='ui button'>Edit</button>
+          <button data-action='delete-gift' class='ui button'>Delete</button>
+        </li>`
+    })
+  }
 
-// Esther changes
+
+
+fetchGifts()
+
+}) // end of DOM load event
